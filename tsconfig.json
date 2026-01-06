@@ -3,5 +3,12 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    // Zmień na false lub usuń
+    "erasableSyntaxOnly": false,
+
+    // Jeśli masz to włączone, to też może blokować standardowe enumy w niektórych wersjach
+    "verbatimModuleSyntax": false
+  }
 }
