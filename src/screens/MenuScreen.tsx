@@ -19,21 +19,17 @@ const MenuItemComponent = ({ dish }: { dish: MenuItemType }) => {
             <h3>{dish.DishName}</h3>
             <p>Cena: {dish.Price.toFixed(2)} PLN</p>
             <button
-                // 1. Zablokowanie przycisku (HTML logic)
                 disabled={!dish.Available}
                 onClick={() => addItem(dish)}
 
-                // Style
+                // Styles
                 style={{
                     padding: '8px 16px',
-                    // Jeśli dostępny: niebieski, jeśli nie: szary
                     backgroundColor: dish.Available ? '#007bff' : '#cccccc',
                     color: 'white',
                     border: 'none',
                     borderRadius: '4px',
-                    // Jeśli dostępny: rączka, jeśli nie: znak zakazu
                     cursor: dish.Available ? 'pointer' : 'not-allowed',
-                    // Dodatkowe wizualne "wyszarzenie"
                     opacity: dish.Available ? 1 : 0.6
                 }}
             >
