@@ -7,7 +7,7 @@ const mockMenuData: MenuItemType[] = [
     { Id: 1, DishName: 'Pizza Margherita', Price: 30, Available: true },
     { Id: 2, DishName: 'Burger Klasyczny', Price: 45, Available: true },
     { Id: 3, DishName: 'Sałatka Cezar', Price: 25, Available: false },
-    {Id: 4, DishName: 'Pizza Neapolitan', Price: 29, Available: false },
+    { Id: 4, DishName: 'Pizza Neapolitan', Price: 29, Available: false },
 ];
 
 // Komponent
@@ -19,22 +19,37 @@ const MenuItemComponent = ({ dish }: { dish: MenuItemType }) => {
             <h3>{dish.DishName}</h3>
             <p>Cena: {dish.Price.toFixed(2)} PLN</p>
             <button
+                // 1. Zablokowanie przycisku (HTML logic)
+                disabled={!dish.Available}
                 onClick={() => addItem(dish)}
-                style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+
+                // Style
+                style={{
+                    padding: '8px 16px',
+                    // Jeśli dostępny: niebieski, jeśli nie: szary
+                    backgroundColor: dish.Available ? '#007bff' : '#cccccc',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    // Jeśli dostępny: rączka, jeśli nie: znak zakazu
+                    cursor: dish.Available ? 'pointer' : 'not-allowed',
+                    // Dodatkowe wizualne "wyszarzenie"
+                    opacity: dish.Available ? 1 : 0.6
+                }}
             >
-                Dodaj do koszyka
+                {/* 3. Tekst informacyjny */}
+                {dish.Available ? 'Dodaj do koszyka' : 'Niedostępne'}
             </button>
         </div>
     );
 };
 
-// 3. Główny komponent ekranu (MenuScreen) - to jego brakowało!
+// Główny komponent
 const MenuScreen = () => {
     return (
         <div className="menu-screen">
             <h1>Nasze Menu</h1>
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {/* Iterujemy po liście dań i dla każdego wyświetlamy MenuItemComponent */}
                 {mockMenuData.map((dish) => (
                     <MenuItemComponent key={dish.Id} dish={dish} />
                 ))}
@@ -43,5 +58,4 @@ const MenuScreen = () => {
     );
 };
 
-// 4. Eksportujemy MenuScreen, który teraz istnieje
 export default MenuScreen;
