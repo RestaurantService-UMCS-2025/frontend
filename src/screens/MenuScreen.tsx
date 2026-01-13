@@ -25,7 +25,7 @@ const MenuItemComponent = ({ dish }: { dish: MenuItemType }) => {
                 // Styles
                 style={{
                     padding: '8px 16px',
-                    backgroundColor: dish.Available ? '#007bff' : '#cccccc',
+                    backgroundColor: dish.Available ? '#0fcb0f' : '#cccccc',
                     color: 'white',
                     border: 'none',
                     borderRadius: '4px',
