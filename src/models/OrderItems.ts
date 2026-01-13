@@ -1,6 +1,6 @@
 import type {OrderItemStatus} from "./enums/OrderItemStatus.ts";
 
-export interface OrderItem {
+export interface OrderItems {
     orderItemId: number;
     menuItemId: number;
     menuItemName: string;
