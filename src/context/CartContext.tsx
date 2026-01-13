@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useMemo, ReactNode } from 'react';
-import type { OrderItem } from '../models/OrderItem'; // Dopasuj ścieżkę
+import type { OrderItems } from '../models/OrderItems.ts'; // Dopasuj ścieżkę
 import type { MenuItemType } from '../models/Menu.ts';          // Dopasuj ścieżkę
 import { OrderItemStatus } from '../models/enums/OrderItemStatus'; // Dopasuj ścieżkę
 
 // Definicja kształtu naszego Contextu
 interface CartContextType {
-    cartItems: OrderItem[];
+    cartItems: OrderItems[];
     totalAmount: number;
     totalQuantity: number;
     addItem: (product: MenuItemType, quantity?: number) => void;
@@ -22,7 +22,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 const DEFAULT_ITEM_STATUS = OrderItemStatus.Ordered;
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [cartItems, setCartItems] = useState<OrderItem[]>([]);
+    const [cartItems, setCartItems] = useState<OrderItems[]>([]);
 
     // --- LOGIKA BIZNESOWA ---
 
@@ -47,7 +47,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 // Stwórz nowy OrderItem
                 // UWAGA: orderItemId ustawiam tymczasowo na ujemną wartość lub timestamp,
                 // ponieważ prawdziwe ID nada baza danych po wysłaniu zamówienia.
-                const newItem: OrderItem = {
+                const newItem: OrderItems = {
                     orderItemId: -Date.now(),
                     menuItemId: product.Id,
                     menuItemName: product.DishName,
