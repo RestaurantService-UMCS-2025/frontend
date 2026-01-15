@@ -4,7 +4,7 @@ import type {Order} from "./Order.ts";
 export interface Table {
     id: number;
     tableInfo: string | null; // string?
-    status: TableStatus;
     // Relacja (opcjonalna)
     orders?: Order[]; // ICollection<Order>
+    status: TableStatus;
 }
