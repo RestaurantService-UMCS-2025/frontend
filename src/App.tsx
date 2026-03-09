@@ -1,25 +1,17 @@
-// import { CartProvider } from './context/CartContext';
-// import MenuScreen from './screens/MenuScreen';
-// import CartScreen from './screens/CartScreen';
-//
-// export default function App() {
-//     return (
-//         <CartProvider>
-//             {/* Twoja nawigacja lub komponenty */}
-//             <MenuScreen />
-//             <CartScreen />
-//         </CartProvider>
-//     );
-// }
-
 import { TablesTestView } from '../src/screens/TablesTestView';
+import MenuScreen from "./screens/MenuScreen.tsx";
+import {CartProvider} from "./context/CartContext.tsx";
+import CartScreen from "./screens/CartScreen.tsx";
 
-function App() {
+
+export function App() {
     return (
-        <div className="App">
+        <CartProvider>
+            {/* Twoja nawigacja lub komponenty */}
             <TablesTestView />
-        </div>
+            <MenuScreen />
+            <CartScreen />
+        </CartProvider>
     );
 }
-
 export default App;
