@@ -9,7 +9,7 @@ const CartSummary = () => {
         updateItemNote
     } = useCart();
 
-    if (cartItems.length === 0) return <p>Koszyk jest pusty</p>;
+    if (cartItems.length === 0) return <h2>Koszyk jest pusty</h2>;
 
     return (
         <div className="cart">
