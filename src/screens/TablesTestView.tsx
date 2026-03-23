@@ -105,7 +105,7 @@ export const TablesTestView = () => {
                 Odśwież Listę Stolików
             </button>
 
-            <div style={{ display: 'flex', gap: '20px' }}>
+            <div className="tables-container">
 
                 {/* LEWA KOLUMNA: Lista stolików */}
                 <div style={{ flex: 1, border: '1px solid #ccc', padding: '10px' }}>
