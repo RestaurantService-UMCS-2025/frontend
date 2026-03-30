@@ -1,55 +1,33 @@
-// Plik: App.tsx
 import React, { useState } from 'react';
-import { TablesTestView } from './screens/TablesTestView';
+import { CartProvider } from "./context/CartContext.tsx";
 import MenuScreen from "./screens/MenuScreen.tsx";
-import CartSummary from "./screens/CartScreen.tsx"; // Użyto nazwy komponentu z pliku
-import { CartProvider, useCart } from "./context/CartContext.tsx";
-import './App.css'; // Pamiętaj o imporcie stylów!
-
-// Osobny komponent dla przycisku koszyka, aby móc czytać z kontekstu
-const CartNavButton = ({ isActive, onClick }: { isActive: boolean, onClick: () => void }) => {
-    const { totalQuantity } = useCart();
-    return (
-        <button className={`nav-button ${isActive ? 'active' : ''}`} onClick={onClick}>
-            Koszyk {totalQuantity > 0 && `(${totalQuantity})`}
-        </button>
-    );
-};
+import CartSummary from "./screens/CartScreen.tsx";
+import { CreateOrderScreen } from "./screens/CreateOrderView.tsx";
+import { TablesTestView } from './screens/TablesTestView';
+import './App.css';
 
 export function App() {
-    // Stan zarządzający aktualnym widokiem ('menu', 'cart', 'tables')
-    const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables'>('menu');
+    const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables' | 'checkout'>('menu');
 
     return (
         <CartProvider>
             <div className="app-layout">
-                {/* Główny obszar wyświetlania */}
                 <div className="content-area">
                     {currentTab === 'menu' && <MenuScreen />}
-                    {currentTab === 'cart' && <CartSummary />}
+                    {currentTab === 'cart' && <CartSummary onNavigateToCheckout={() => setCurrentTab('checkout')} />}
+                    {currentTab === 'checkout' && (
+                        <CreateOrderScreen
+                            onOrderSuccess={() => setCurrentTab('tables')}
+                            onBack={() => setCurrentTab('cart')}
+                        />
+                    )}
                     {currentTab === 'tables' && <TablesTestView />}
                 </div>
 
-                {/* Pasek nawigacji na dole ekranu */}
                 <nav className="bottom-nav">
-                    <button
-                        className={`nav-button ${currentTab === 'menu' ? 'active' : ''}`}
-                        onClick={() => setCurrentTab('menu')}
-                    >
-                        Menu
-                    </button>
-
-                    <CartNavButton
-                        isActive={currentTab === 'cart'}
-                        onClick={() => setCurrentTab('cart')}
-                    />
-
-                    <button
-                        className={`nav-button ${currentTab === 'tables' ? 'active' : ''}`}
-                        onClick={() => setCurrentTab('tables')}
-                    >
-                        Stoliki
-                    </button>
+                    <button onClick={() => setCurrentTab('menu')} className={currentTab === 'menu' ? 'active' : ''}>Menu</button>
+                    <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>Koszyk</button>
+                    <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>Stoliki</button>
                 </nav>
             </div>
         </CartProvider>
