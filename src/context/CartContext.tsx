@@ -30,7 +30,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const addItem = (product: MenuItemType, quantity: number = 1) => {
         setCartItems((prevItems) => {
             // Sprawdź, czy produkt już jest w koszyku
-            const existingItemIndex = prevItems.findIndex(item => item.menuItemId === product.Id);
+            const existingItemIndex = prevItems.findIndex(item => item.menuItemId === product.id);
 
             if (existingItemIndex >= 0) {
                 // Kopia tablicy (immutability)
@@ -49,10 +49,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 // ponieważ prawdziwe ID nada baza danych po wysłaniu zamówienia.
                 const newItem: OrderItems = {
                     orderItemId: -Date.now(),
-                    menuItemId: product.Id,
-                    menuItemName: product.DishName,
+                    menuItemId: product.id,
+                    menuItemName: product.dishName,
                     quantity: quantity,
-                    unitPrice: product.Price,
+                    unitPrice: product.price,
                     note: '',
                     status: DEFAULT_ITEM_STATUS
                 };
