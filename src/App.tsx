@@ -4,24 +4,24 @@ import MenuScreen from "./screens/MenuScreen.tsx";
 import CartSummary from "./screens/CartScreen.tsx";
 import { CreateOrderScreen } from "./screens/CreateOrderView.tsx";
 import { TablesTestView } from './screens/TablesTestView';
-import { ActiveOrderScreen } from './screens/ActiveOrderScreen'; // ⬅️ NOWY IMPORT (upewnij się, że ścieżka jest poprawna)
+import { ActiveOrderScreen } from './screens/ActiveOrderScreen';
 import './App.css';
 
 export function App() {
-    // 1. Inicjalizacja stanu: sprawdzamy, czy w pamięci jest zamówienie.
-    // Jeśli jest, od razu otwieramy zakładkę 'activeOrder'. Jeśli nie, domyślnie 'menu'.
+
+    // Check if OrderId is in the memory
     const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables' | 'checkout' | 'activeOrder'>(() => {
         const savedOrderId = localStorage.getItem('myActiveOrderId');
         return savedOrderId ? 'activeOrder' : 'menu';
     });
 
-    // 2. Dodatkowy stan, żeby wiedzieć, czy wyświetlać przycisk "Moje Zamówienie" w nawigacji
+    // New state to know if to dislay 'myActiveOrderId' view
     const [hasActiveOrder, setHasActiveOrder] = useState<boolean>(!!localStorage.getItem('myActiveOrderId'));
 
-    // 3. Funkcja wywoływana po udanym złożeniu zamówienia
+    // On Success
     const handleOrderSuccess = () => {
-        setHasActiveOrder(true); // Pokazujemy przycisk w menu
-        setCurrentTab('activeOrder'); // Przełączamy widok na aktywne zamówienie
+        setHasActiveOrder(true);
+        setCurrentTab('activeOrder');
     };
 
     return (
@@ -32,7 +32,7 @@ export function App() {
                     {currentTab === 'cart' && <CartSummary onNavigateToCheckout={() => setCurrentTab('checkout')} />}
                     {currentTab === 'checkout' && (
                         <CreateOrderScreen
-                            onOrderSuccess={handleOrderSuccess} // ⬅️ ZMIANA: używamy nowej funkcji
+                            onOrderSuccess={handleOrderSuccess}
                             onBack={() => setCurrentTab('cart')}
                         />
                     )}
@@ -47,12 +47,12 @@ export function App() {
                     <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>Koszyk</button>
                     <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>Stoliki</button>
 
-                    {/* ⬅️ NOWY PRZYCISK: Pokazuje się tylko, jeśli klient ma aktywne zamówienie */}
+                    {/*Button shows if there is active order*/}
                     {hasActiveOrder && (
                         <button
                             onClick={() => setCurrentTab('activeOrder')}
                             className={currentTab === 'activeOrder' ? 'active' : ''}
-                            style={{ fontWeight: 'bold', color: '#28a745' }} // Wyróżniamy na zielono
+                            style={{ fontWeight: 'bold', color: '#28a745' }}
                         >
                             Moje zamówienie
                         </button>

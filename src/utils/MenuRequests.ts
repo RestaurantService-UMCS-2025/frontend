@@ -11,14 +11,12 @@ const api = axios.create({
 });
 
 
-// Pobieranie całego menu
 export const fetchAllMenuItems = async (): Promise<MenuItemType[]> => {
     const response = await api.get<MenuItemType[]>('/Menu/all');
     return response.data;
 };
 
 
-// Pobieranie tylko dostępnego menu
 export const fetchAvailableMenuItems = async (): Promise<MenuItemType[]> => {
     const response = await api.get<MenuItemType[]>('/Menu/availableMenu');
     return response.data;

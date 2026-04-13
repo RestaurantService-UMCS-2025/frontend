@@ -10,7 +10,6 @@ export const ActiveOrderScreen = () => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // 1. Odczytanie ID z localStorage po załadowaniu komponentu
         const savedOrderId = localStorage.getItem('myActiveOrderId');
 
         if (!savedOrderId) {
@@ -18,7 +17,6 @@ export const ActiveOrderScreen = () => {
             return;
         }
 
-        // 2. Pobranie danych zamówienia z backendu
         const fetchMyOrder = async () => {
             try {
                 const orderIdNum = parseInt(savedOrderId, 10);
@@ -38,10 +36,9 @@ export const ActiveOrderScreen = () => {
         fetchMyOrder();
     }, []);
 
-    // Funkcja do ręcznego "zapomnienia" zamówienia na froncie
     const handleClearLocalOrder = () => {
         localStorage.removeItem('myActiveOrderId');
-        window.location.reload(); // Odświeża stronę, aby wrócić do głównego widoku
+        window.location.reload();
     };
 
     if (isLoading) return <div>Ładowanie Twojego zamówienia...</div>;
