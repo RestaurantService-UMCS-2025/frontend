@@ -10,28 +10,16 @@ const api = axios.create({
     },
 });
 
-/**
- * Pobiera wszystkie pozycje z menu.
- * Endpoint: GET /api/Menu/all
- */
+
+// Pobieranie całego menu
 export const fetchAllMenuItems = async (): Promise<MenuItemType[]> => {
     const response = await api.get<MenuItemType[]>('/Menu/all');
     return response.data;
 };
 
-/**
- * Pobiera tylko dostępne pozycje z menu.
- * Endpoint: GET /api/Menu/availableMenu
- */
+
+// Pobieranie tylko dostępnego menu
 export const fetchAvailableMenuItems = async (): Promise<MenuItemType[]> => {
     const response = await api.get<MenuItemType[]>('/Menu/availableMenu');
     return response.data;
-};
-
-/**
- * Zmienia status dostępności dania.
- * Endpoint: PATCH /api/Menu/available
- */
-export const updateMenuAvailability = async (id: number, mode: boolean): Promise<void> => {
-    await api.patch('/Menu/available', { id, mode });
 };

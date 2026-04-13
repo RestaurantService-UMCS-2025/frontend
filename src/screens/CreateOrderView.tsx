@@ -26,13 +26,16 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
         setError(null);
 
         try {
-            // KROK 1: Utworzenie zamówienia (POST /order)
+            // Create Order
             const newOrderId = await OrdersApi.createOrder({ tableId: selectedTableId as number });
             if (newOrderId === -1) throw new Error("Błąd serwera przy tworzeniu zamówienia");
 
-            // KROK 2: Dodanie przedmiotów (POST /items)
+            // Add items
             const itemsToSubmit = cartItems.map(item => ({ ...item, orderItemId: 0 }));
             await OrdersApi.addItemsToOrder(newOrderId, itemsToSubmit);
+
+            // Save OrderId in browser
+            localStorage.setItem('myActiveOrderId', newOrderId.toString());
 
             clearCart();
             alert("Zamówienie złożone!");
