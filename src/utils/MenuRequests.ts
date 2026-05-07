@@ -1,7 +1,8 @@
 import axios from 'axios';
 import type { MenuItemType } from '../models/Menu'; // Upewnij się, że ścieżka jest poprawna
+import config from './../config.json';
 
-const API_URL = 'http://localhost:5077/api';
+const API_URL = config.apiURL;
 
 const api = axios.create({
     baseURL: API_URL,

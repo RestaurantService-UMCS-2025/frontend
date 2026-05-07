@@ -2,6 +2,9 @@ import axios from 'axios';
 import type { Order } from '../models/Order';
 import type { OrderItems } from '../models/OrderItems';
 import { OrderStage } from '../models/enums/OrderStage';
+import config from './../config.json';
+
+const API_URL = config.apiURL;
 
 
 export interface PostOrderBody {
@@ -12,8 +15,6 @@ export interface PatchOrderStatusBody {
     stage: OrderStage;
 }
 
-
-const API_URL = 'http://localhost:5077/api';
 
 const api = axios.create({
     baseURL: API_URL,

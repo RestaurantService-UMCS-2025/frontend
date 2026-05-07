@@ -2,8 +2,9 @@
 // @ts-expect-error
 import { Order, Table, TablesStatusRequest } from '../models';
 import axios from 'axios';
+import config from './../config.json';
 
-const API_URL = 'http://localhost:5077/api';
+const API_URL = config.apiURL;
 
 const api = axios.create({
     baseURL: API_URL,
