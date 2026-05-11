@@ -68,7 +68,7 @@ export const ActiveOrderScreen = () => {
                     onClick={handleClearLocalOrder}
                     style={{ marginTop: '20px', padding: '10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px' }}
                 >
-                    Zakończ podgląd (usuń z pamięci)
+                    Zakończ podgląd
                 </button>
             </div>
         </div>

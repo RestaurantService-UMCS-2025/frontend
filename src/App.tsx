@@ -8,6 +8,15 @@ import { ActiveOrderScreen } from './screens/ActiveOrderScreen';
 import './App.css';
 
 export function App() {
+    // ⬇️ NOWE: Funkcja odczytująca ID stolika z adresu URL (np. /5 zwraca 5)
+    const getTableIdFromUrl = () => {
+        const pathValue = window.location.pathname.replace('/', '');
+        const parsed = parseInt(pathValue, 10);
+        return isNaN(parsed) ? null : parsed;
+    };
+
+    // ⬇️ NOWE: Stan przechowujący odczytany stolik (null jeśli brak w linku)
+    const [scannedTableId] = useState<number | null>(getTableIdFromUrl());
 
     // Check if OrderId is in the memory
     const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables' | 'checkout' | 'activeOrder'>(() => {
@@ -15,10 +24,8 @@ export function App() {
         return savedOrderId ? 'activeOrder' : 'menu';
     });
 
-    // New state to know if to dislay 'myActiveOrderId' view
     const [hasActiveOrder, setHasActiveOrder] = useState<boolean>(!!localStorage.getItem('myActiveOrderId'));
 
-    // On Success
     const handleOrderSuccess = () => {
         setHasActiveOrder(true);
         setCurrentTab('activeOrder');
@@ -30,15 +37,17 @@ export function App() {
                 <div className="content-area">
                     {currentTab === 'menu' && <MenuScreen />}
                     {currentTab === 'cart' && <CartSummary onNavigateToCheckout={() => setCurrentTab('checkout')} />}
+
+                    {/* ⬇️ ZMODYFIKOWANE: Przekazujemy scannedTableId do widoku zamówienia */}
                     {currentTab === 'checkout' && (
                         <CreateOrderScreen
                             onOrderSuccess={handleOrderSuccess}
                             onBack={() => setCurrentTab('cart')}
+                            preselectedTableId={scannedTableId}
                         />
                     )}
-                    {currentTab === 'tables' && <TablesTestView />}
 
-                    {/* ⬅️ NOWY WIDOK: Ekran aktywnego zamówienia */}
+                    {currentTab === 'tables' && <TablesTestView />}
                     {currentTab === 'activeOrder' && <ActiveOrderScreen />}
                 </div>
 
@@ -47,7 +56,6 @@ export function App() {
                     <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>Koszyk</button>
                     <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>Stoliki</button>
 
-                    {/*Button shows if there is active order*/}
                     {hasActiveOrder && (
                         <button
                             onClick={() => setCurrentTab('activeOrder')}

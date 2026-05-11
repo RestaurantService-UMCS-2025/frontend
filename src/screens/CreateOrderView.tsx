@@ -7,12 +7,18 @@ import type { Table } from '../models/Table';
 interface CreateOrderScreenProps {
     onOrderSuccess: () => void;
     onBack: () => void;
+    preselectedTableId: number | null; // ⬅️ NOWE: Odbieramy opcjonalny stolik z URL
 }
 
-export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuccess, onBack }) => {
+export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuccess, onBack, preselectedTableId }) => {
     const { cartItems, totalAmount, clearCart } = useCart();
     const [tables, setTables] = useState<Table[]>([]);
-    const [selectedTableId, setSelectedTableId] = useState<number | "">("");
+
+    // ⬇️ ZMODYFIKOWANE: Jeśli przekazano stolik z URL, ustawiamy go od razu
+    const [selectedTableId, setSelectedTableId] = useState<number | "">(
+        preselectedTableId !== null ? preselectedTableId : ""
+    );
+
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -26,15 +32,12 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
         setError(null);
 
         try {
-            // Create Order
             const newOrderId = await OrdersApi.createOrder({ tableId: selectedTableId as number });
             if (newOrderId === -1) throw new Error("Błąd serwera przy tworzeniu zamówienia");
 
-            // Add items
             const itemsToSubmit = cartItems.map(item => ({ ...item, orderItemId: 0 }));
             await OrdersApi.addItemsToOrder(newOrderId, itemsToSubmit);
 
-            // Save OrderId in browser
             localStorage.setItem('myActiveOrderId', newOrderId.toString());
 
             clearCart();
@@ -55,15 +58,28 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
 
             <div style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '8px' }}>
                 <h3>Suma: {totalAmount.toFixed(2)} PLN</h3>
-                <label style={{ display: 'block', margin: '15px 0 5px' }}>Wybierz stolik:</label>
-                <select
-                    value={selectedTableId}
-                    onChange={(e) => setSelectedTableId(Number(e.target.value))}
-                    style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
-                >
-                    <option value="">-- Wybierz --</option>
-                    {tables.map(t => <option key={t.id} value={t.id}>Stolik #{t.id} ({t.status})</option>)}
-                </select>
+
+                {/* ⬇️ ZMODYFIKOWANE: Warunkowe wyświetlanie wyboru stolika */}
+                {preselectedTableId !== null ? (
+                    // Widok dla opcji ze wskazanym z góry stolikiem (np. przez kod QR z linkiem)
+                    <div style={{ margin: '15px 0 20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '5px', border: '1px solid #ced4da' }}>
+                        <span style={{ display: 'block', fontSize: '0.9rem', color: '#6c757d' }}>Twój stolik:</span>
+                        <strong style={{ fontSize: '1.2rem' }}>Stolik #{preselectedTableId}</strong>
+                    </div>
+                ) : (
+                    // Standardowy widok z rozwijaną listą
+                    <>
+                        <label style={{ display: 'block', margin: '15px 0 5px' }}>Wybierz stolik:</label>
+                        <select
+                            value={selectedTableId}
+                            onChange={(e) => setSelectedTableId(Number(e.target.value))}
+                            style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
+                        >
+                            <option value="">-- Wybierz --</option>
+                            {tables.map(t => <option key={t.id} value={t.id}>Stolik #{t.id} ({t.status})</option>)}
+                        </select>
+                    </>
+                )}
 
                 <button
                     onClick={handlePlaceOrder}
