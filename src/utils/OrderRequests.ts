@@ -44,6 +44,7 @@ export const addItemsToOrder = async (orderId: number, orderItems: OrderItems[])
 
 
 export const fetchOrderById = async (id: number): Promise<Order> => {
+    console.log(id)
     const response = await api.get<Order>(`/Orders/orders/${id}`);
     return response.data;
 };
