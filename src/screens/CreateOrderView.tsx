@@ -7,14 +7,13 @@ import type { Table } from '../models/Table';
 interface CreateOrderScreenProps {
     onOrderSuccess: () => void;
     onBack: () => void;
-    preselectedTableId: number | null; // ⬅️ NOWE: Odbieramy opcjonalny stolik z URL
+    preselectedTableId: number | null;
 }
 
 export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuccess, onBack, preselectedTableId }) => {
     const { cartItems, totalAmount, clearCart } = useCart();
     const [tables, setTables] = useState<Table[]>([]);
 
-    // ⬇️ ZMODYFIKOWANE: Jeśli przekazano stolik z URL, ustawiamy go od razu
     const [selectedTableId, setSelectedTableId] = useState<number | "">(
         preselectedTableId !== null ? preselectedTableId : ""
     );
@@ -59,7 +58,6 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
             <div style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '8px' }}>
                 <h3>Suma: {totalAmount.toFixed(2)} PLN</h3>
 
-                {/* ⬇️ ZMODYFIKOWANE: Warunkowe wyświetlanie wyboru stolika */}
                 {preselectedTableId !== null ? (
                     // Widok dla opcji ze wskazanym z góry stolikiem (np. przez kod QR z linkiem)
                     <div style={{ margin: '15px 0 20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '5px', border: '1px solid #ced4da' }}>
@@ -86,7 +84,7 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
                     disabled={isLoading || selectedTableId === ""}
                     style={{ width: '100%', padding: '15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', fontWeight: 'bold' }}
                 >
-                    {isLoading ? "Przetwarzanie..." : "POTWIERDZAM ZAMÓWIENIE"}
+                    {isLoading ? "Przetwarzanie..." : "Potwierdzanie zamówienia"}
                 </button>
             </div>
         </div>
