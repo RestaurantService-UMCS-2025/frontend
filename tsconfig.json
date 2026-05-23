@@ -5,7 +5,8 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    // Zmień na false lub usuń
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "erasableSyntaxOnly": false,
 
     // Jeśli masz to włączone, to też może blokować standardowe enumy w niektórych wersjach

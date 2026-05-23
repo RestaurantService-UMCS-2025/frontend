@@ -35,6 +35,7 @@ const CartSummary = ({ onNavigateToCheckout }: CartSummaryProps) => {
                     </li>
                 ))}
             </ul>
+
             <div style={{ borderTop: '2px solid #333', marginTop: '20px', paddingTop: '10px' }}>
                 <h3>Suma: {totalAmount.toFixed(2)} PLN</h3>
                 <button

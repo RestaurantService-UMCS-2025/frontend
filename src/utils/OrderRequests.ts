@@ -2,6 +2,9 @@ import axios from 'axios';
 import type { Order } from '../models/Order';
 import type { OrderItems } from '../models/OrderItems';
 import { OrderStage } from '../models/enums/OrderStage';
+import config from './../config.json';
+
+const API_URL = config.apiURL;
 
 
 export interface PostOrderBody {
@@ -12,8 +15,6 @@ export interface PatchOrderStatusBody {
     stage: OrderStage;
 }
 
-
-const API_URL = 'http://localhost:5077/api';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -43,6 +44,7 @@ export const addItemsToOrder = async (orderId: number, orderItems: OrderItems[])
 
 
 export const fetchOrderById = async (id: number): Promise<Order> => {
+    console.log(id)
     const response = await api.get<Order>(`/Orders/orders/${id}`);
     return response.data;
 };
