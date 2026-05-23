@@ -1,11 +1,21 @@
 import { useState } from 'react';
-import { CartProvider } from "./context/CartContext.tsx";
+import { CartProvider, useCart } from "./context/CartContext.tsx"; // <-- Dodano import useCart
 import MenuScreen from "./screens/MenuScreen.tsx";
 import CartSummary from "./screens/CartScreen.tsx";
 import { CreateOrderScreen } from "./screens/CreateOrderView.tsx";
 import { TablesTestView } from './screens/TablesTestView';
 import { ActiveOrderScreen } from './screens/ActiveOrderScreen';
 import './App.css';
+
+// ⬇️ NOWE: Mały komponent wyświetlający czerwoną kropkę z ilością, jeśli koszyk nie jest pusty
+const CartBadgeHelper = () => {
+    const { cartItems } = useCart();
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+    if (totalItems === 0) return null;
+
+    return <span className="cart-badge">{totalItems}</span>;
+};
 
 export function App() {
     const getTableIdFromUrl = () => {
@@ -49,9 +59,13 @@ export function App() {
                     <button onClick={() => setCurrentTab('menu')} className={currentTab === 'menu' ? 'active' : ''}>
                         🍴 Menu
                     </button>
+
+                    {/* ⬇️ ZMODYFIKOWANE: Dodano komponent CartBadgeHelper do przycisku koszyka */}
                     <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>
                         🛒 Koszyk
+                        <CartBadgeHelper />
                     </button>
+
                     <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>
                         🪑 Stoliki
                     </button>

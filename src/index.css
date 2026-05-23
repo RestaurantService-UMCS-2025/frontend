@@ -29,7 +29,9 @@ body {
   color: var(--text-main);
 }
 
-/* Animacje wejścia */
+/* =========================================
+   Animacje
+   ========================================= */
 @keyframes slideUpFade {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -40,11 +42,18 @@ body {
   100% { opacity: 1; }
 }
 
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .animated-view {
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Układ główny */
+/* =========================================
+   Układ główny i Typografia
+   ========================================= */
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -60,7 +69,6 @@ body {
   padding: 24px;
 }
 
-/* Typografia */
 h1, h2, h3, h4 {
   color: var(--secondary);
   margin-top: 0;
@@ -68,7 +76,9 @@ h1, h2, h3, h4 {
 
 h1 { font-size: 2rem; margin-bottom: 1.5rem; }
 
-/* Przyciski */
+/* =========================================
+   Przyciski
+   ========================================= */
 .btn {
   padding: 12px 20px;
   border: none;
@@ -126,7 +136,15 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   color: white;
 }
 
-/* Nawigacja dolna */
+.btn-added {
+  background-color: var(--secondary) !important; /* Zmiana koloru na granatowy po kliknięciu */
+  transform: scale(0.96) !important;
+  box-shadow: none !important;
+}
+
+/* =========================================
+   Nawigacja dolna i Licznik (Badge)
+   ========================================= */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -151,6 +169,7 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition);
+  position: relative; /* Wymagane, by licznik trzymał się przycisku */
 }
 
 .bottom-nav button:hover {
@@ -166,11 +185,30 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
 .bottom-nav button.active-order-btn {
   color: var(--success);
 }
+
 .bottom-nav button.active-order-btn.active {
   background-color: rgba(42, 157, 143, 0.1);
 }
 
-/* Karty i widoki */
+.cart-badge {
+  position: absolute;
+  top: -6px;            /* Wyciągamy licznik lekko nad przycisk */
+  right: 4px;           /* Dosuwamy do prawej krawędzi */
+  background-color: var(--danger);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 10;          /* Zapewnia, że jest zawsze na wierzchu */
+}
+
+/* =========================================
+   Karty Menu
+   ========================================= */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -178,6 +216,10 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
   background: var(--surface);
   border-radius: var(--radius-md);
   padding: 20px;
@@ -192,14 +234,21 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   transform: translateY(-4px);
 }
 
+.card h3 {
+  flex-grow: 1; /* Pcha cenę i przycisk w dół, wyrównując karty */
+  margin-bottom: 12px;
+}
+
 .card-price {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--primary);
-  margin: 12px 0;
+  margin: auto 0 12px 0; /* Górny margin auto trzyma cenę na dole */
 }
 
-/* Koszyk */
+/* =========================================
+   Koszyk i Formularze
+   ========================================= */
 .cart-list {
   list-style: none;
   padding: 0;
@@ -266,7 +315,9 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
 }
 
-/* Widok Podsumowania i Tabel */
+/* =========================================
+   Widok Podsumowania i Stolików
+   ========================================= */
 .summary-panel {
   background: var(--surface);
   border-radius: var(--radius-md);
@@ -301,10 +352,9 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
   border-color: var(--secondary);
 }
 
-@media (max-width: 768px) {
-  .tables-layout { grid-template-columns: 1fr; }
-}
-
+/* =========================================
+   Obsługa Błędów (Error Box)
+   ========================================= */
 .error-box {
   background-color: #FFF0F0;
   border-left: 5px solid var(--danger);
@@ -343,29 +393,30 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
 }
 
 /* =========================================
-   Responsywność (Telefony - max 600px)
+   Responsywność (Tablety i Telefony)
    ========================================= */
+
+/* Tablety */
+@media (max-width: 768px) {
+  .tables-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Telefony */
 @media (max-width: 600px) {
-  /* Główny kontener */
   .content-area {
     padding: 16px;
   }
 
-  h1 {
-    font-size: 1.6rem;
-  }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
 
-  h2 {
-    font-size: 1.3rem;
-  }
-
-  /* Menu i siatki */
   .menu-grid {
     grid-template-columns: 1fr; /* Jedna kolumna na telefonie */
     gap: 16px;
   }
 
-  /* Nawigacja dolna - dostosowanie do palców */
   .bottom-nav {
     padding: 8px;
     justify-content: space-between;
@@ -381,7 +432,11 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
     flex: 1;
   }
 
-  /* Elementy koszyka i podsumowanie */
+  .cart-badge {
+    top: -4px;
+    right: calc(50% - 28px); /* Przesuwamy bardziej w prawo od ikony */
+  }
+
   .cart-item-header {
     flex-direction: column;
     align-items: flex-start;
@@ -396,7 +451,6 @@ h1 { font-size: 2rem; margin-bottom: 1.5rem; }
     padding: 16px;
   }
 
-  /* Przebudowa stolików */
   .tables-layout {
     display: flex;
     flex-direction: column-reverse; /* Detale wybranego stolika na górze, lista pod spodem */
