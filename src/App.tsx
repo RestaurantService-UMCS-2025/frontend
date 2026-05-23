@@ -8,17 +8,14 @@ import { ActiveOrderScreen } from './screens/ActiveOrderScreen';
 import './App.css';
 
 export function App() {
-    // ⬇️ NOWE: Funkcja odczytująca ID stolika z adresu URL (np. /5 zwraca 5)
     const getTableIdFromUrl = () => {
         const pathValue = window.location.pathname.replace('/', '');
         const parsed = parseInt(pathValue, 10);
         return isNaN(parsed) ? null : parsed;
     };
 
-    // ⬇️ NOWE: Stan przechowujący odczytany stolik (null jeśli brak w linku)
     const [scannedTableId] = useState<number | null>(getTableIdFromUrl());
 
-    // Check if OrderId is in the memory
     const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables' | 'checkout' | 'activeOrder'>(() => {
         const savedOrderId = localStorage.getItem('myActiveOrderId');
         return savedOrderId ? 'activeOrder' : 'menu';
@@ -34,11 +31,9 @@ export function App() {
     return (
         <CartProvider>
             <div className="app-layout">
-                <div className="content-area">
+                <div className="content-area animated-view">
                     {currentTab === 'menu' && <MenuScreen />}
                     {currentTab === 'cart' && <CartSummary onNavigateToCheckout={() => setCurrentTab('checkout')} />}
-
-                    {/* ⬇️ ZMODYFIKOWANE: Przekazujemy scannedTableId do widoku zamówienia */}
                     {currentTab === 'checkout' && (
                         <CreateOrderScreen
                             onOrderSuccess={handleOrderSuccess}
@@ -46,23 +41,26 @@ export function App() {
                             preselectedTableId={scannedTableId}
                         />
                     )}
-
                     {currentTab === 'tables' && <TablesTestView />}
                     {currentTab === 'activeOrder' && <ActiveOrderScreen />}
                 </div>
 
                 <nav className="bottom-nav">
-                    <button onClick={() => setCurrentTab('menu')} className={currentTab === 'menu' ? 'active' : ''}>Menu</button>
-                    <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>Koszyk</button>
-                    <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>Stoliki</button>
-
+                    <button onClick={() => setCurrentTab('menu')} className={currentTab === 'menu' ? 'active' : ''}>
+                        🍴 Menu
+                    </button>
+                    <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>
+                        🛒 Koszyk
+                    </button>
+                    <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>
+                        🪑 Stoliki
+                    </button>
                     {hasActiveOrder && (
                         <button
                             onClick={() => setCurrentTab('activeOrder')}
-                            className={currentTab === 'activeOrder' ? 'active' : ''}
-                            style={{ fontWeight: 'bold', color: '#28a745' }}
+                            className={`active-order-btn ${currentTab === 'activeOrder' ? 'active' : ''}`}
                         >
-                            Moje zamówienie
+                            📋 Moje zamówienie
                         </button>
                     )}
                 </nav>
