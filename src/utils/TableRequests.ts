@@ -57,7 +57,7 @@ export const TableRequests = {
 
     getAll: async (): Promise<Table[]> => {
         // Usunąłem ukośnik z początku, aby pasowało do baseURL
-        const response = await api.get<Table[]>('Tables/all');
+        const response = await api.get<Table[]>('Tables/allAvailable');
         return response.data;
     },
 
