@@ -2,21 +2,29 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import type { MenuItemType } from '../models/Menu';
 import { fetchAllMenuItems } from '../utils/MenuRequests';
-import {ErrorMessage} from "../components/ErrorMessage.tsx";
 
 const MenuItemComponent = ({ dish, index }: { dish: MenuItemType, index: number }) => {
     const { addItem } = useCart();
+    const [isAdded, setIsAdded] = useState(false);
+
+    const handleAdd = () => {
+        addItem(dish);
+        setIsAdded(true);
+        // Resetujemy animację i tekst po 600ms
+        setTimeout(() => setIsAdded(false), 600);
+    };
+
     return (
         <div className="card" style={{ animationDelay: `${index * 0.05}s` }}>
             <h3>{dish.dishName}</h3>
             <div className="card-price">{dish.price.toFixed(2)} PLN</div>
             <button
-                className={`btn ${dish.available ? 'btn-success' : 'btn-outline'}`}
+                className={`btn ${dish.available ? 'btn-success' : 'btn-outline'} ${isAdded ? 'btn-added' : ''}`}
                 disabled={!dish.available}
-                onClick={() => addItem(dish)}
+                onClick={handleAdd}
                 style={{ width: '100%', marginTop: '10px' }}
             >
-                {dish.available ? 'Dodaj do koszyka' : 'Niedostępne'}
+                {isAdded ? '✓ Dodano' : (dish.available ? 'Dodaj do koszyka' : 'Niedostępne')}
             </button>
         </div>
     );
@@ -30,22 +38,12 @@ const MenuScreen = () => {
     useEffect(() => {
         fetchAllMenuItems()
             .then(setMenuData)
-            .catch((err) => setError(err.message || 'Nieznany błąd serwera.'))
+            .catch(() => setError('Błąd ładowania menu'))
             .finally(() => setIsLoading(false));
     }, []);
 
     if (isLoading) return <div className="animated-view">Ładowanie pysznego menu...</div>;
-
-    // ⬇️ NOWA OBSŁUGA BŁĘDU
-    if (error) return (
-        <div className="animated-view">
-            <ErrorMessage
-                message="Nie udało się załadować listy dań. Sprawdź swoje połączenie z internetem lub spróbuj ponownie za chwilę."
-                debugDetails={error}
-            />
-            <button className="btn btn-outline" onClick={() => window.location.reload()}>Spróbuj ponownie</button>
-        </div>
-    );
+    if (error) return <div className="animated-view" style={{ color: 'var(--danger)' }}>{error}</div>;
 
     return (
         <div className="animated-view">

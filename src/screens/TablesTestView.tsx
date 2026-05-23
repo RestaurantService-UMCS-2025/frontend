@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { TableRequests } from '../utils/TableRequests';
-import {Order} from "../models/Order.ts";
 import {Table} from "../models/Table.ts";
+import {Order} from "../models/Order.ts";
 
 export const TablesTestView = () => {
     const [tables, setTables] = useState<Table[]>([]);
