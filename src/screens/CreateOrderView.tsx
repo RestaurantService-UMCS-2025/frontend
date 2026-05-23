@@ -13,16 +13,12 @@ interface CreateOrderScreenProps {
 export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuccess, onBack, preselectedTableId }) => {
     const { cartItems, totalAmount, clearCart } = useCart();
     const [tables, setTables] = useState<Table[]>([]);
-
-    const [selectedTableId, setSelectedTableId] = useState<number | "">(
-        preselectedTableId !== null ? preselectedTableId : ""
-    );
-
+    const [selectedTableId, setSelectedTableId] = useState<number | "">(preselectedTableId !== null ? preselectedTableId : "");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        TableRequests.getAll().then(setTables).catch(() => setError("Nie udało się pobrać stolików"));
+        TableRequests.getAll().then(setTables).catch(() => setError("Nie udało się pobrać stolików."));
     }, []);
 
     const handlePlaceOrder = async () => {
@@ -38,9 +34,7 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
             await OrdersApi.addItemsToOrder(newOrderId, itemsToSubmit);
 
             localStorage.setItem('myActiveOrderId', newOrderId.toString());
-
             clearCart();
-            alert("Zamówienie złożone!");
             onOrderSuccess();
         } catch (err: any) {
             setError(err.message || "Wystąpił błąd");
@@ -50,41 +44,46 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <button onClick={onBack} style={{ marginBottom: '20px' }}>← Wróć do koszyka</button>
+        <div className="animated-view">
+            <button className="btn btn-outline" onClick={onBack} style={{ marginBottom: '24px' }}>
+                ← Wróć do koszyka
+            </button>
             <h1>Finalizacja zamówienia</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
 
-            <div style={{ backgroundColor: '#f8f9fa', padding: '20px', borderRadius: '8px' }}>
-                <h3>Suma: {totalAmount.toFixed(2)} PLN</h3>
+            <div className="summary-panel">
+                {error && <div style={{ color: 'white', background: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>{error}</div>}
+
+                <h2 style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', paddingBottom: '16px', marginBottom: '24px' }}>
+                    Do zapłaty: <span style={{ color: 'var(--primary)' }}>{totalAmount.toFixed(2)} PLN</span>
+                </h2>
 
                 {preselectedTableId !== null ? (
-                    // Widok dla opcji ze wskazanym z góry stolikiem (np. przez kod QR z linkiem)
-                    <div style={{ margin: '15px 0 20px', padding: '15px', backgroundColor: '#e9ecef', borderRadius: '5px', border: '1px solid #ced4da' }}>
-                        <span style={{ display: 'block', fontSize: '0.9rem', color: '#6c757d' }}>Twój stolik:</span>
-                        <strong style={{ fontSize: '1.2rem' }}>Stolik #{preselectedTableId}</strong>
+                    <div style={{ padding: '16px', backgroundColor: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)', marginBottom: '24px' }}>
+                        <span style={{ display: 'block', fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Skanowany stolik:</span>
+                        <strong style={{ fontSize: '1.4rem', color: 'var(--secondary)' }}>Stolik #{preselectedTableId}</strong>
                     </div>
                 ) : (
-                    // Standardowy widok z rozwijaną listą
-                    <>
-                        <label style={{ display: 'block', margin: '15px 0 5px' }}>Wybierz stolik:</label>
+                    <div style={{ marginBottom: '24px' }}>
+                        <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px' }}>Wybierz swój stolik:</label>
                         <select
+                            className="input-field"
                             value={selectedTableId}
                             onChange={(e) => setSelectedTableId(Number(e.target.value))}
-                            style={{ width: '100%', padding: '10px', marginBottom: '20px' }}
+                            style={{ cursor: 'pointer', fontSize: '1rem' }}
                         >
-                            <option value="">-- Wybierz --</option>
+                            <option value="">-- Wybierz z listy --</option>
                             {tables.map(t => <option key={t.id} value={t.id}>Stolik #{t.id} ({t.status})</option>)}
                         </select>
-                    </>
+                    </div>
                 )}
 
                 <button
+                    className="btn btn-success"
                     onClick={handlePlaceOrder}
                     disabled={isLoading || selectedTableId === ""}
-                    style={{ width: '100%', padding: '15px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', fontWeight: 'bold' }}
+                    style={{ width: '100%', padding: '16px', fontSize: '1.1rem' }}
                 >
-                    {isLoading ? "Przetwarzanie..." : "Potwierdzanie zamówienia"}
+                    {isLoading ? "Przetwarzanie..." : "Potwierdzam zamówienie"}
                 </button>
             </div>
         </div>

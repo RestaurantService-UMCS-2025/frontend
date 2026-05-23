@@ -3,28 +3,23 @@ import { useCart } from '../context/CartContext';
 import type { MenuItemType } from '../models/Menu';
 import { fetchAllMenuItems } from '../utils/MenuRequests';
 
-const MenuItemComponent = ({ dish }: { dish: MenuItemType }) => {
+const MenuItemComponent = ({ dish, index }: { dish: MenuItemType, index: number }) => {
     const { addItem } = useCart();
     return (
-        <div style={{ border: '1px solid #ddd', padding: '1rem', margin: '0.5rem', borderRadius: '8px', width: '200px' }}>
+        <div className="card" style={{ animationDelay: `${index * 0.05}s` }}>
             <h3>{dish.dishName}</h3>
-            <p>Cena: {dish.price.toFixed(2)} PLN</p>
+            <div className="card-price">{dish.price.toFixed(2)} PLN</div>
             <button
+                className={`btn ${dish.available ? 'btn-success' : 'btn-outline'}`}
                 disabled={!dish.available}
                 onClick={() => addItem(dish)}
-                style={{
-                    width: '100%', padding: '10px',
-                    backgroundColor: dish.available ? '#28a745' : '#ccc',
-                    color: 'white', border: 'none', borderRadius: '4px',
-                    cursor: dish.available ? 'pointer' : 'not-allowed'
-                }}
+                style={{ width: '100%', marginTop: '10px' }}
             >
                 {dish.available ? 'Dodaj do koszyka' : 'Niedostępne'}
             </button>
         </div>
     );
 };
-
 
 const MenuScreen = () => {
     const [menuData, setMenuData] = useState<MenuItemType[]>([]);
@@ -38,15 +33,15 @@ const MenuScreen = () => {
             .finally(() => setIsLoading(false));
     }, []);
 
-    if (isLoading) return <div>Ładowanie menu...</div>;
-    if (error) return <div style={{ color: 'red' }}>{error}</div>;
+    if (isLoading) return <div className="animated-view">Ładowanie pysznego menu...</div>;
+    if (error) return <div className="animated-view" style={{ color: 'var(--danger)' }}>{error}</div>;
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>🍴 Nasze Menu</h1>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {menuData.map((dish) => (
-                    <MenuItemComponent key={dish.id} dish={dish} />
+        <div className="animated-view">
+            <h1>Odkryj Nasze Smaki</h1>
+            <div className="menu-grid">
+                {menuData.map((dish, idx) => (
+                    <MenuItemComponent key={dish.id} dish={dish} index={idx} />
                 ))}
             </div>
         </div>

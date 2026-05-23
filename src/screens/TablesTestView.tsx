@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TableRequests } from '../utils/TableRequests';
-import { Table, Order } from '../models';
+import {Order} from "../models/Order.ts";
+import {Table} from "../models/Table.ts";
 
 export const TablesTestView = () => {
     const [tables, setTables] = useState<Table[]>([]);
@@ -31,30 +32,57 @@ export const TablesTestView = () => {
     };
 
     return (
-        <div style={{ padding: '20px', display: 'flex', gap: '20px' }}>
-            <div style={{ flex: 1 }}>
-                <h2>Stoliki</h2>
-                <button onClick={loadTables}>Odśwież</button>
-                {tables.map(t => (
-                    <div key={t.id} onClick={() => handleSelectTable(t.id)} style={{ padding: '10px', border: '1px solid #ccc', margin: '5px 0', cursor: 'pointer', backgroundColor: selectedTable?.id === t.id ? '#e3f2fd' : 'white' }}>
-                        Stolik #{t.id} - {t.status}
-                    </div>
-                ))}
+        <div className="animated-view">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h1>Zarządzanie Salą</h1>
+                <button className="btn btn-outline" onClick={loadTables} disabled={loading}>
+                    {loading ? 'Odświeżanie...' : 'Odśwież'}
+                </button>
             </div>
-            <div style={{ flex: 2, borderLeft: '1px solid #ccc', paddingLeft: '20px' }}>
-                <h2>Szczegóły</h2>
-                {selectedTable ? (
-                    <div>
-                        <h3>Stolik #{selectedTable.id}</h3>
-                        <h4>Zamówienia:</h4>
-                        {orders.map(o => (
-                            <div key={o.id} style={{ border: '1px solid #ddd', padding: '10px', margin: '5px 0' }}>
-                                <strong>Zamówienie #{o.id}</strong> - Status: {o.stage}
-                                <ul>{o.items.map(i => <li key={i.orderItemId}>{i.menuItemName} x{i.quantity}</li>)}</ul>
-                            </div>
-                        ))}
-                    </div>
-                ) : <p>Wybierz stolik.</p>}
+
+            <div className="tables-layout">
+                <div className="summary-panel" style={{ marginTop: 0 }}>
+                    <h2 style={{ marginBottom: '16px' }}>Stoliki</h2>
+                    {tables.map(t => (
+                        <div
+                            key={t.id}
+                            onClick={() => handleSelectTable(t.id)}
+                            className={`table-item ${selectedTable?.id === t.id ? 'selected' : ''}`}
+                        >
+                            <strong>Stolik #{t.id}</strong>
+                            <div style={{ fontSize: '0.9rem', opacity: 0.8 }}>Status: {t.status}</div>
+                        </div>
+                    ))}
+                </div>
+
+                <div className="summary-panel" style={{ marginTop: 0 }}>
+                    <h2>Szczegóły</h2>
+                    {selectedTable ? (
+                        <div className="animated-view">
+                            <h3 style={{ color: 'var(--primary)', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+                                Wybrany: Stolik #{selectedTable.id}
+                            </h3>
+                            <h4 style={{ marginTop: '20px' }}>Aktywne zamówienia:</h4>
+                            {orders.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>Brak zamówień dla tego stolika.</p> : null}
+
+                            {orders.map(o => (
+                                <div key={o.id} className="card" style={{ marginBottom: '16px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <strong>ID Zamówienia: #{o.id}</strong>
+                                        <span style={{ backgroundColor: 'var(--background)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.9rem' }}>{o.stage}</span>
+                                    </div>
+                                    <ul style={{ paddingLeft: '20px', margin: 0, color: 'var(--text-muted)' }}>
+                                        {o.items.map(i => (
+                                            <li key={i.orderItemId}>{i.menuItemName} <strong>x{i.quantity}</strong></li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p style={{ color: 'var(--text-muted)', textAlign: 'center', marginTop: '40px' }}>Wybierz stolik z listy po lewej stronie, aby zobaczyć szczegóły.</p>
+                    )}
+                </div>
             </div>
         </div>
     );
