@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import * as OrdersApi from '../utils/OrderRequests.ts';
 import { TableRequests } from '../utils/TableRequests';
 import type { Table } from '../models/Table';
+import { ErrorMessage } from '../components/ErrorMessage';
 
 interface CreateOrderScreenProps {
     onOrderSuccess: () => void;
@@ -15,20 +16,23 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
     const [tables, setTables] = useState<Table[]>([]);
     const [selectedTableId, setSelectedTableId] = useState<number | "">(preselectedTableId !== null ? preselectedTableId : "");
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+
+    const [errorData, setErrorData] = useState<{message: string, debug?: string} | null>(null);
 
     useEffect(() => {
-        TableRequests.getAll().then(setTables).catch(() => setError("Nie udało się pobrać stolików."));
+        TableRequests.getAll()
+            .then(setTables)
+            .catch((err) => setErrorData({ message: "Nie udało się pobrać listy dostępnych stolików.", debug: err.message }));
     }, []);
 
     const handlePlaceOrder = async () => {
         if (selectedTableId === "") return alert("Wybierz stolik!");
         setIsLoading(true);
-        setError(null);
+        setErrorData(null);
 
         try {
             const newOrderId = await OrdersApi.createOrder({ tableId: selectedTableId as number });
-            if (newOrderId === -1) throw new Error("Błąd serwera przy tworzeniu zamówienia");
+            if (newOrderId === -1) throw new Error("API zwróciło kod błędu (-1). Prawdopodobnie odrzucono żądanie.");
 
             const itemsToSubmit = cartItems.map(item => ({ ...item, orderItemId: 0 }));
             await OrdersApi.addItemsToOrder(newOrderId, itemsToSubmit);
@@ -37,7 +41,10 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
             clearCart();
             onOrderSuccess();
         } catch (err: any) {
-            setError(err.message || "Wystąpił błąd");
+            setErrorData({
+                message: "Wystąpił problem podczas przetwarzania Twojego zamówienia.",
+                debug: err.message || JSON.stringify(err)
+            });
         } finally {
             setIsLoading(false);
         }
@@ -51,7 +58,13 @@ export const CreateOrderScreen: React.FC<CreateOrderScreenProps> = ({ onOrderSuc
             <h1>Finalizacja zamówienia</h1>
 
             <div className="summary-panel">
-                {error && <div style={{ color: 'white', background: 'var(--danger)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>{error}</div>}
+                {errorData && (
+                    <ErrorMessage
+                        title="Błąd zamówienia"
+                        message={errorData.message}
+                        debugDetails={errorData.debug}
+                    />
+                )}
 
                 <h2 style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', paddingBottom: '16px', marginBottom: '24px' }}>
                     Do zapłaty: <span style={{ color: 'var(--primary)' }}>{totalAmount.toFixed(2)} PLN</span>

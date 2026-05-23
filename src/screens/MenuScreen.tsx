@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import type { MenuItemType } from '../models/Menu';
 import { fetchAllMenuItems } from '../utils/MenuRequests';
+import {ErrorMessage} from "../components/ErrorMessage.tsx";
 
 const MenuItemComponent = ({ dish, index }: { dish: MenuItemType, index: number }) => {
     const { addItem } = useCart();
@@ -29,12 +30,22 @@ const MenuScreen = () => {
     useEffect(() => {
         fetchAllMenuItems()
             .then(setMenuData)
-            .catch(() => setError('Błąd ładowania menu'))
+            .catch((err) => setError(err.message || 'Nieznany błąd serwera.'))
             .finally(() => setIsLoading(false));
     }, []);
 
     if (isLoading) return <div className="animated-view">Ładowanie pysznego menu...</div>;
-    if (error) return <div className="animated-view" style={{ color: 'var(--danger)' }}>{error}</div>;
+
+    // ⬇️ NOWA OBSŁUGA BŁĘDU
+    if (error) return (
+        <div className="animated-view">
+            <ErrorMessage
+                message="Nie udało się załadować listy dań. Sprawdź swoje połączenie z internetem lub spróbuj ponownie za chwilę."
+                debugDetails={error}
+            />
+            <button className="btn btn-outline" onClick={() => window.location.reload()}>Spróbuj ponownie</button>
+        </div>
+    );
 
     return (
         <div className="animated-view">
