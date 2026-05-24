@@ -1,0 +1,30 @@
+# Zależności (Kluczowe!)
+node_modules
+npm-debug.log
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Zbudowane pliki lokalne (kontener buduje własne)
+dist
+dist-ssr
+coverage
+
+# Katalogi systemowe i edytorów
+.vscode
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+
+# Pliki środowiskowe z lokalnymi hasłami (opcjonalnie, zdejmij komentarz jeśli używasz)
+# .env
+# .env.local
+# .env.*.local
+
+# Git i Docker (nie są potrzebne wewnątrz kontenera)
+.git
+.gitignore
+Dockerfile
+.dockerignore
