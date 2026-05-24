@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { CartProvider, useCart } from "./context/CartContext.tsx"; // <-- Dodano import useCart
+import { CartProvider, useCart } from "./context/CartContext.tsx";
 import MenuScreen from "./screens/MenuScreen.tsx";
 import CartSummary from "./screens/CartScreen.tsx";
 import { CreateOrderScreen } from "./screens/CreateOrderView.tsx";
-import { TablesTestView } from './screens/TablesTestView';
 import { ActiveOrderScreen } from './screens/ActiveOrderScreen';
 import './App.css';
 
-// ⬇️ NOWE: Mały komponent wyświetlający czerwoną kropkę z ilością, jeśli koszyk nie jest pusty
+// Mały komponent wyświetlający czerwoną kropkę z ilością, jeśli koszyk nie jest pusty
 const CartBadgeHelper = () => {
     const { cartItems } = useCart();
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -26,7 +25,8 @@ export function App() {
 
     const [scannedTableId] = useState<number | null>(getTableIdFromUrl());
 
-    const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'tables' | 'checkout' | 'activeOrder'>(() => {
+    // Usunięto 'tables' z dostępnych zakładek
+    const [currentTab, setCurrentTab] = useState<'menu' | 'cart' | 'checkout' | 'activeOrder'>(() => {
         const savedOrderId = localStorage.getItem('myActiveOrderId');
         return savedOrderId ? 'activeOrder' : 'menu';
     });
@@ -51,7 +51,6 @@ export function App() {
                             preselectedTableId={scannedTableId}
                         />
                     )}
-                    {currentTab === 'tables' && <TablesTestView />}
                     {currentTab === 'activeOrder' && <ActiveOrderScreen />}
                 </div>
 
@@ -60,15 +59,11 @@ export function App() {
                         🍴 Menu
                     </button>
 
-                    {/* ⬇️ ZMODYFIKOWANE: Dodano komponent CartBadgeHelper do przycisku koszyka */}
                     <button onClick={() => setCurrentTab('cart')} className={currentTab === 'cart' ? 'active' : ''}>
                         🛒 Koszyk
                         <CartBadgeHelper />
                     </button>
 
-                    <button onClick={() => setCurrentTab('tables')} className={currentTab === 'tables' ? 'active' : ''}>
-                        🪑 Stoliki
-                    </button>
                     {hasActiveOrder && (
                         <button
                             onClick={() => setCurrentTab('activeOrder')}
