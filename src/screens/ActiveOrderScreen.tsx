@@ -3,6 +3,19 @@ import * as OrdersApi from '../utils/OrderRequests';
 import type { Order } from '../models/Order';
 import type { OrderItems } from '../models/OrderItems';
 
+// Funkcja konwertująca status liczbowy na tekst
+const getStatusText = (stage: number | string) => {
+    const stageNum = Number(stage);
+    switch (stageNum) {
+        case 0:
+            return 'w przygotowaniu';
+        case 2:
+            return 'gotowe';
+        default:
+            return `nieznany (${stage})`; // domyślna wartość dla innych statusów
+    }
+};
+
 export const ActiveOrderScreen = () => {
     const [order, setOrder] = useState<Order | null>(null);
     const [items, setItems] = useState<OrderItems[]>([]);
@@ -51,7 +64,10 @@ export const ActiveOrderScreen = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--border)' }}>
                     <div>
                         <span style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Status</span>
-                        <strong style={{ fontSize: '1.2rem', color: 'var(--primary)' }}>{order.stage}</strong>
+                        {/* Zmiana tutaj: użycie funkcji getStatusText */}
+                        <strong style={{ fontSize: '1.2rem', color: 'var(--primary)' }}>
+                            {getStatusText(order.stage)}
+                        </strong>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                         <span style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Stolik</span>
