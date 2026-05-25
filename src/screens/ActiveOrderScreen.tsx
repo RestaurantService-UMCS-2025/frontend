@@ -3,7 +3,6 @@ import * as OrdersApi from '../utils/OrderRequests';
 import type { Order } from '../models/Order';
 import type { OrderItems } from '../models/OrderItems';
 
-// Funkcja konwertująca status liczbowy na tekst
 const getStatusText = (stage: number | string) => {
     const stageNum = Number(stage);
     switch (stageNum) {
